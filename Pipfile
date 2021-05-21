@@ -4,6 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+flask = "==1.1.1"
+pubnub = "==4.1.6"
+requests = "*"
 
 [dev-packages]
 pytest = "*"

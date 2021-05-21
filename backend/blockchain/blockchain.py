@@ -35,6 +35,14 @@ class Blockchain:
 
         self.chain = chain
     
+    def to_json(self) -> list:
+        """This will serialize the blockchain into a list of blocks
+
+        Returns:
+            list: a list of each block represented as a json object
+        """
+        return list(map(lambda block: block.to_json(), self.chain))
+
     def __repr__(self) -> str:
         return f'Blockchain: {self.chain}'
 
@@ -55,6 +63,20 @@ class Blockchain:
             cur_block = chain[i]
             last_block = chain[i - 1]
             Block.is_valid_block(last_block, cur_block)
+    
+    @staticmethod
+    def from_json(chain_json) -> object:
+        """Deserialize a list of serialized blocks into a blockchain instance
+
+        Args:
+            chain_json (json): json representation of the chain
+
+        Returns:
+            object: Blockchain object
+        """
+        blockchain = Blockchain()
+        blockchain.chain = list(map(lambda block_json: Block.from_json(block_json), chain_json))
+        return blockchain
 
 
 if __name__ == '__main__':

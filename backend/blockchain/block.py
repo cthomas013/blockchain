@@ -37,6 +37,14 @@ class Block:
         self.difficulty = difficulty
         self.nonce = nonce
 
+    def to_json(self) -> dict:
+        """Serialize the block object into a dictionary
+
+        Returns:
+            dict: dictionary representation of the fields in the block
+        """
+        return self.__dict__
+
     def __repr__(self) -> str:
         return (
             'Block('
@@ -85,6 +93,18 @@ class Block:
             object: return a block object to be the genesis block in the chain
         """
         return Block(**GENESIS_DATA)
+
+    @staticmethod
+    def from_json(block_json) -> object:
+        """Creates a block object from json
+
+        Args:
+            block_json (json): json representation of a block's data
+
+        Returns:
+            object: a Block object that has been created from the relevant json data
+        """
+        return Block(**block_json)
 
     @staticmethod
     def adjust_difficulty(last_block, new_timestamp) -> int:

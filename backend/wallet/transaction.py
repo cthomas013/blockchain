@@ -1,3 +1,4 @@
+import json
 from uuid import uuid4
 from time import time_ns
 
@@ -7,10 +8,18 @@ class Transaction:
     """Document an exchange in currency from a sender to one or more recepients
     """
 
-    def __init__(self, sender_wallet, recipient, amount) -> None:
-        self.id = str(uuid4())[:8]
-        self.output = self.create_output(sender_wallet, recipient, amount)
-        self.input = self.create_input(sender_wallet, self.output)
+    def __init__(
+        self, 
+        sender_wallet=None, 
+        recipient=None, 
+        amount=None, 
+        id=None, 
+        output=None, 
+        input=None
+    ) -> None:
+        self.id = id or str(uuid4())[:8]
+        self.output = output or self.create_output(sender_wallet, recipient, amount)
+        self.input = input or self.create_input(sender_wallet, self.output)
 
     def create_output(self, sender_wallet, recipient, amount) -> dict:
         """Structure the output data for the transaction
@@ -70,6 +79,26 @@ class Transaction:
 
         self.input = self.create_input(sender_wallet, self.output)
 
+    def to_json(self) -> dict:
+        """Will serialize the transaction object into a valid JSON object
+
+        Returns:
+            dict: serialized JSON object that represents the transaction
+        """
+        return self.__dict__
+
+    @staticmethod
+    def from_json(transaction_json) -> object:
+        """Deserialize a transaction's JSON representation back into a transaction instance
+
+        Args:
+            transaction_json ([dict]): json representation of a transaction
+
+        Returns:
+            object: a transaction object that is built from the transaction json representation fed into the function
+        """
+        return Transaction(**transaction_json)
+
     @staticmethod
     def is_valid_transaction(transaction):
         """Validate a transaction. Will raise an exception if the transaction is not valid.
@@ -92,3 +121,5 @@ if __name__ == '__main__':
     transaction = Transaction(Wallet(), 'recipient', 15)
     print(f'transaction : {transaction.__dict__}')
 
+    restored_transaction = Transaction.from_json(transaction.to_json())
+    print(f'\nrestored transaction : {restored_transaction.__dict__}')
